@@ -1,0 +1,179 @@
+@import "tailwindcss";
+
+:root,
+:root[data-theme="dark"],
+:root.dark,
+[data-theme="dark"],
+.dark {
+  --bg-canvas: #080c0a;
+  --bg-surface: #0e1612;
+  --bg-primary: #080c0a;
+  --bg-elevated: #14201a;
+  --bg-panel: #1a2922;
+  --bg-overlay: rgba(8, 12, 10, 0.96);
+  --bg-toolbox: rgba(255, 255, 255, 0.05);
+  --bg-toolbox-active: rgba(0, 245, 155, 0.15);
+  --border-toolbox-divider: rgba(255, 255, 255, 0.1);
+
+  --border-primary: #1a2922;
+  --border-secondary: #24382f;
+  --border-tertiary: #111a15;
+  --border-white-alpha-14: rgba(0, 245, 155, 0.12);
+  --border-white-alpha-33: rgba(0, 245, 155, 0.28);
+
+  --text-primary: #f0f7f3;
+  --text-secondary: rgba(240, 247, 243, 0.75);
+  --text-tertiary: rgba(240, 247, 243, 0.48);
+
+  --accent-primary: #00f59b;
+  --accent-secondary: #39ffb4;
+  --accent-tertiary: #80ffd0;
+  --accent-warning: #ffb84d;
+
+  --btn-primary-bg: #00f59b;
+  --btn-primary-text: #05120a;
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 14px;
+  --radius-3xl: 16px;
+  --radius-4xl: 20px;
+}
+
+@theme inline {
+  --color-bg-canvas: var(--bg-canvas);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-bg-panel: var(--bg-panel);
+  --color-bg-overlay: var(--bg-overlay);
+  --color-bg-toolbox: var(--bg-toolbox);
+  --color-bg-toolbox-active: var(--bg-toolbox-active);
+
+  --color-border-primary: var(--border-primary);
+  --color-border-secondary: var(--border-secondary);
+  --color-border-tertiary: var(--border-tertiary);
+  --color-border-alpha-14: var(--border-white-alpha-14);
+  --color-border-alpha-33: var(--border-white-alpha-33);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+
+  --color-accent-primary: var(--accent-primary);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-accent-tertiary: var(--accent-tertiary);
+  --color-accent-warning: var(--accent-warning);
+
+  --color-btn-primary-bg: var(--btn-primary-bg);
+  --color-btn-primary-text: var(--btn-primary-text);
+}
+
+html,
+body {
+  background: var(--bg-canvas, #080c0a);
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* Android safe area */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+  overflow: hidden;
+}
+
+::selection {
+  background: var(--accent-primary, #00f59b);
+  color: #05120a;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 245, 155, 0.2);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 245, 155, 0.4);
+}
+
+/* Wallpaper theme overrides applied via data-wallpaper attribute */
+[data-wallpaper="cosmos"] {
+  --accent-primary: #f5a623;
+  --accent-secondary: #f7be5a;
+  --accent-tertiary: #f9d48a;
+  --btn-primary-bg: #f5a623;
+  --btn-primary-text: #1a0f00;
+  --bg-toolbox-active: rgba(245, 166, 35, 0.15);
+  --border-white-alpha-14: rgba(245, 166, 35, 0.12);
+  --border-white-alpha-33: rgba(245, 166, 35, 0.28);
+}
+
+[data-wallpaper="nebula"] {
+  --accent-primary: #f43f5e;
+  --accent-secondary: #fb6a83;
+  --accent-tertiary: #fd9bab;
+  --btn-primary-bg: #f43f5e;
+  --btn-primary-text: #fff;
+  --bg-toolbox-active: rgba(244, 63, 94, 0.15);
+  --border-white-alpha-14: rgba(244, 63, 94, 0.12);
+  --border-white-alpha-33: rgba(244, 63, 94, 0.28);
+}
+
+[data-wallpaper="initial-d"] {
+  --accent-primary: #e8e2d8;
+  --accent-secondary: #f0ebe3;
+  --accent-tertiary: #fff;
+  --btn-primary-bg: #e8e2d8;
+  --btn-primary-text: #1a1a1a;
+  --bg-toolbox-active: rgba(232, 226, 216, 0.15);
+  --border-white-alpha-14: rgba(232, 226, 216, 0.12);
+  --border-white-alpha-33: rgba(232, 226, 216, 0.28);
+}
+
+[data-wallpaper="neo-tokyo"] {
+  --accent-primary: #ff3b30;
+  --accent-secondary: #ff6b63;
+  --accent-tertiary: #ff9b96;
+  --btn-primary-bg: #ff3b30;
+  --btn-primary-text: #fff;
+  --bg-toolbox-active: rgba(255, 59, 48, 0.15);
+  --border-white-alpha-14: rgba(255, 59, 48, 0.12);
+  --border-white-alpha-33: rgba(255, 59, 48, 0.28);
+}
+
+/* Utility */
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.glass {
+  background: rgba(14, 22, 18, 0.72);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+}
+
+/* Android bottom nav safe area */
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 12px);
+}

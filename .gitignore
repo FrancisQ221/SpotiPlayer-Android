@@ -1,0 +1,15 @@
+node_modules/
+dist/
+release-artifacts/
+.DS_Store
+Thumbs.db
+*.log
+*.local
+*.tsbuildinfo
+
+# Android build outputs
+android/app/build/
+android/build/
+android/.gradle/
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json

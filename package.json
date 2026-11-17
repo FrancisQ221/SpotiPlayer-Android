@@ -1,0 +1,45 @@
+{
+  "name": "spoplayer-android",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "SpoPlayer Android — music player powered by Capacitor",
+  "author": {
+    "name": "FrancisQ221",
+    "email": "pablocuches@gmail.com"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "cap:copy": "cap copy android",
+    "cap:sync": "cap sync android",
+    "cap:open": "cap open android",
+    "android:debug": "pnpm build && pnpm cap:copy && cd android && .\\gradlew.bat assembleDebug",
+    "android:release": "pnpm build && pnpm cap:copy && cd android && .\\gradlew.bat assembleRelease"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@supabase/supabase-js": "^2.118.0",
+    "@tanstack/react-virtual": "^3.13.23",
+    "framer-motion": "^12.38.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-icons": "^5.6.0",
+    "react-router-dom": "^7.18.2",
+    "youtubei.js": "18.1.0",
+    "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.0.5",
+    "tailwindcss": "4.3.3",
+    "typescript": "^5",
+    "vite": "8.2.1"
+  }
+}
