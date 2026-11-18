@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "SpoPlayer Android — music player powered by Capacitor",
+  "description": "SpoPlayer Android — official mobile client powered by Capacitor",
   "author": {
     "name": "FrancisQ221",
     "email": "pablocuches@gmail.com"
@@ -19,15 +19,30 @@
     "android:release": "pnpm build && pnpm cap:copy && cd android && .\\gradlew.bat assembleRelease"
   },
   "dependencies": {
+    "@braccato/core": "^1.4.0",
+    "@braccato/parsers": "^0.2.1",
     "@capacitor/android": "^7.0.0",
     "@capacitor/core": "^7.0.0",
+    "@mingcute/react": "^1.4.1",
+    "@solar-icons/react": "^1.1.1",
     "@supabase/supabase-js": "^2.118.0",
     "@tanstack/react-virtual": "^3.13.23",
+    "@xhayper/discord-rpc": "^1.5.1",
+    "bgutils-js": "4.0.3",
+    "electron-updater": "^6.8.9",
     "framer-motion": "^12.38.0",
+    "gsap": "^3.15.0",
+    "lottie-web": "^5.13.0",
+    "morphicons": "^1.7.1",
+    "next-themes": "^0.4.6",
     "react": "19.2.4",
+    "react-apple-emojis": "^3.0.0",
     "react-dom": "19.2.4",
     "react-icons": "^5.6.0",
     "react-router-dom": "^7.18.2",
+    "solar-icons": "^0.0.15",
+    "soundtouchjs": "^0.3.0",
+    "tar": "^7.5.22",
     "youtubei.js": "18.1.0",
     "zustand": "^5.0.12"
   },
@@ -37,9 +52,12 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/tar": "^7.0.87",
     "@vitejs/plugin-react": "^6.0.5",
+    "electron": "^44.0.0",
     "tailwindcss": "4.3.3",
     "typescript": "^5",
-    "vite": "8.2.1"
+    "vite": "8.2.1",
+    "vitest": "^4.1.9"
   }
 }

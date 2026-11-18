@@ -7,19 +7,19 @@ const config: CapacitorConfig = {
   android: {
     allowMixedContent: true,
     captureInput: true,
-    webContentsDebuggingEnabled: false,
+    webContentsDebuggingEnabled: true,
   },
   plugins: {
-    SplashScreen: {
-      launchShowDuration: 1500,
-      backgroundColor: "#080c0a",
-      showSpinner: false,
+    CapacitorHttp: {
+      enabled: true,
+    },
+    CapacitorCookies: {
+      enabled: true,
     },
   },
   server: {
-    // Allow YouTube/API requests from WebView
     androidScheme: "https",
-    cleartext: false,
+    cleartext: true,
   },
 };
 

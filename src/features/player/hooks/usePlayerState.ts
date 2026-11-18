@@ -1,0 +1,51 @@
+import { useSyncExternalStore } from "react";
+import { playerEngine, type PlayerState } from "../engine/playerEngine";
+
+const EMPTY_STATE: PlayerState = {
+  status: "idle",
+  queue: [],
+  currentIndex: -1,
+  currentTrack: null,
+  positionMs: 0,
+  durationMs: 0,
+  volume: 1,
+  repeat: "off",
+  shuffle: false,
+  error: null,
+  playbackMode: null,
+  playbackContext: null,
+  playbackContextCover: null,
+  audioQuality: "high",
+  audioOutputDeviceId: "default",
+  monoAudioEnabled: false,
+  miniPlayerStyle: "default",
+  accentVariant: "default",
+  pauseOnDeviceChange: true,
+  autoplaySimilar: true,
+  trackDoubleClickBehavior: "play",
+  defaultPlaybackContext: "resume",
+  fullscreen: false,
+  playbackRate: 1,
+  pitchSemitones: 0,
+  isPitchLinked: true,
+  keepSpeedAcrossTracks: true,
+  isReverbEnabled: false,
+  reverbLevel: 0.35,
+  crossfadeSeconds: 0,
+  bassSwapEnabled: true,
+  dynamicLevelingEnabled: true,
+  spatialAudioEnabled: false,
+  spatialAudioSpeed: "normal" as const,
+  gaplessEnabled: true,
+  sleepTimerType: null,
+  sleepTimerEnd: null,
+  lyricsViewMode: "cinematic",
+};
+
+export function usePlayerState(): PlayerState {
+  return useSyncExternalStore(
+    (onStoreChange) => playerEngine.subscribe(onStoreChange),
+    () => playerEngine.getSnapshot(),
+    () => EMPTY_STATE,
+  );
+}

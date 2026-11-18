@@ -1,20 +1,25 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import { resolve } from "path";
+import path from "path";
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  base: "./",
+  define: {
+    __APP_VERSION__: JSON.stringify("0.1.54"),
+  },
+  plugins: [
+    react(),
+    tailwindcss(),
+  ],
   resolve: {
     alias: {
-      "@": resolve(__dirname, "./src"),
+      "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
   build: {
     outDir: "dist",
-    sourcemap: false,
-    chunkSizeWarningLimit: 2000,
+    emptyOutDir: true,
+    chunkSizeWarningLimit: 2500,
   },
-  // Required for Capacitor: build relative paths
-  base: "./",
 });
