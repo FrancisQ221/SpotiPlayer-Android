@@ -208,9 +208,9 @@ export default function SettingsModal() {
       open={open}
       onOpenChange={(next) => (!next ? handleClose() : undefined)}
       maxWidth={920}
-      className="p-0 h-[640px] max-h-[88vh] !flex-row overflow-hidden !bg-[#070c09] !border !border-[var(--accent-primary,#00f59b)]/25 !rounded-3xl shadow-[0_30px_90px_rgba(0,0,0,0.85),0_0_40px_rgba(0,245,155,0.06)]"
+      className="p-0 h-[88vh] md:h-[640px] max-h-[92vh] flex-col md:!flex-row overflow-hidden !bg-[#070c09] !border !border-[var(--accent-primary,#00f59b)]/25 !rounded-3xl shadow-[0_30px_90px_rgba(0,0,0,0.85),0_0_40px_rgba(0,245,155,0.06)]"
     >
-      <aside className="w-[260px] shrink-0 flex flex-col min-h-0 bg-[#050806]/80 border-r border-white/[0.06] backdrop-blur-2xl">
+      <aside className="w-full md:w-[260px] shrink-0 flex flex-col min-h-0 bg-[#050806]/95 border-b md:border-b-0 md:border-r border-white/[0.06]">
         {/* Header de la barra de ajustes */}
         <div className="flex items-center justify-between px-[16px] pt-[18px] pb-[12px] shrink-0">
           <div className="flex items-center gap-[8px]">
@@ -257,9 +257,9 @@ export default function SettingsModal() {
           </div>
         </div>
 
-        {/* Lista de pestaÃ±as */}
+        {/* Lista de pestañas */}
         <nav
-          className="flex-1 min-h-0 overflow-y-auto px-[10px] pb-[12px] flex flex-col gap-[14px]"
+          className="min-h-0 overflow-x-auto md:overflow-y-auto px-[10px] pb-[8px] md:pb-[12px] flex flex-row md:flex-col gap-2 md:gap-[14px] no-scrollbar shrink-0"
           role="tablist"
           aria-label={t("settings.title")}
         >
@@ -269,8 +269,8 @@ export default function SettingsModal() {
             </p>
           ) : (
             filteredGroups.map((group) => (
-              <div key={group.labelKey} className="flex flex-col gap-[3px]">
-                <div className="flex items-center gap-[8px] px-[10px] pb-[4px] pt-[4px]">
+              <div key={group.labelKey} className="flex flex-row md:flex-col gap-[3px] shrink-0">
+                <div className="hidden md:flex items-center gap-[8px] px-[10px] pb-[4px] pt-[4px]">
                   <span
                     className="text-text-tertiary/75 text-[10.5px] font-bold uppercase tracking-widest select-none"
                     style={font}
@@ -289,7 +289,7 @@ export default function SettingsModal() {
                       role="tab"
                       aria-selected={isActive}
                       onClick={() => setActiveTab(id)}
-                      className={`group relative w-full flex items-center gap-[10px] px-[10px] py-[8px] rounded-xl border transition-all duration-150 cursor-pointer text-left select-none ${
+                      className={`group relative shrink-0 w-auto md:w-full flex items-center gap-[8px] md:gap-[10px] px-[12px] md:px-[10px] py-[6px] md:py-[8px] rounded-xl border transition-all duration-150 cursor-pointer text-left select-none ${
                         isActive
                           ? "bg-gradient-to-r from-[var(--accent-primary,#00f59b)]/18 via-[var(--accent-primary,#00f59b)]/10 to-transparent text-white border-[var(--accent-primary,#00f59b)]/35 shadow-[0_0_16px_rgba(0,245,155,0.08)] font-medium"
                           : "bg-transparent text-text-secondary border-transparent hover:text-text-primary hover:bg-white/[0.04] hover:border-white/[0.05]"
@@ -320,7 +320,7 @@ export default function SettingsModal() {
         </nav>
 
         {/* Tarjeta de usuario en el pie de la barra de ajustes */}
-        <div className="shrink-0 p-[10px]">
+        <div className="hidden md:block shrink-0 p-[10px]">
           <div className="flex items-center gap-[10px] p-[8px] rounded-xl bg-white/[0.03] border border-white/[0.07] hover:border-[var(--accent-primary,#00f59b)]/30 transition-all">
             <span className="relative shrink-0">
               <UserAvatar user={user ?? null} size={32} />

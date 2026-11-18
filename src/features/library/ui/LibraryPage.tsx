@@ -367,7 +367,7 @@ export default function LibraryPage() {
       >
         <div className="sticky top-0 z-20 bg-transparent">
 
-          <div className="px-[32px] pt-[20px] pb-[10px]">
+          <div className="px-4 md:px-[32px] pt-[20px] pb-[10px]">
             <h1
               className="text-[26px] font-bold text-text-primary tracking-tight m-0 leading-tight"
               style={{ fontFamily: "var(--font-inter), sans-serif" }}
@@ -376,7 +376,7 @@ export default function LibraryPage() {
             </h1>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-[10px] px-[32px] pb-[10px]">
+          <div className="flex flex-wrap items-center justify-between gap-[10px] px-4 md:px-[32px] pb-[10px]">
             <div className="flex items-center gap-[12px] flex-wrap">
               <LibraryTabs activeTab={activeTab} onChange={setActiveTab} />
               {activeTab === "playlists" && (
@@ -433,7 +433,7 @@ export default function LibraryPage() {
         </div>
 
 
-        <div className="px-[32px] pt-[4px] pb-[20px]">
+        <div className="px-4 md:px-[32px] pt-[4px] pb-[96px] md:pb-[20px]">
           {activeTab === "downloads" ? (
             <DownloadsTab />
           ) : activeTab === "local" ? (

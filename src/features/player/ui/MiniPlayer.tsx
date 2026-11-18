@@ -711,8 +711,82 @@ function MiniPlayer({
           />
         </div>
 
+        {/* Mobile MiniPlayer Layout (< md screens) */}
+        <div className="flex md:hidden h-full items-center justify-between px-3.5 pointer-events-none gap-2">
+          {/* Left: Cover + Title/Artist (Tapping anywhere opens FullscreenPlayer) */}
+          <div
+            role="button"
+            tabIndex={0}
+            aria-label="Open player"
+            className="flex items-center gap-3 min-w-0 flex-1 pointer-events-auto cursor-pointer prevent-seek"
+            onClick={onFullscreenOpen}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            <div className="relative h-[40px] w-[40px] shrink-0 overflow-hidden rounded-lg bg-bg-elevated">
+              <CoverImage
+                key={coverUrl}
+                src={coverUrl}
+                alt="Track artwork"
+                width={40}
+                height={40}
+                priority
+                draggable={false}
+                className="h-[40px] w-[40px] object-cover rounded-lg"
+              />
+              {isPlaying && (
+                <div className="absolute inset-0 bg-black/40 flex items-end justify-center gap-[2px] pb-[4px]">
+                  <span className="spoplayer-eq-bar" />
+                  <span className="spoplayer-eq-bar" />
+                  <span className="spoplayer-eq-bar" />
+                </div>
+              )}
+            </div>
+            <div className="flex flex-col min-w-0 flex-1 justify-center leading-tight">
+              <span className="truncate text-[13.5px] font-semibold text-text-primary">
+                {trackTitle}
+              </span>
+              <span className="truncate text-[11.5px] text-text-tertiary">
+                {trackArtists}
+              </span>
+            </div>
+          </div>
+
+          {/* Right: Like, Play/Pause, Next */}
+          <div className="flex items-center gap-1 shrink-0 pointer-events-auto prevent-seek" onPointerDown={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              aria-label={isLiked ? "Unlike" : "Like"}
+              className={`${iconButtonClass} !h-[34px] !w-[34px] ${isLiked ? "text-[var(--accent-primary,#00f59b)]" : "text-text-secondary"}`}
+              onClick={handleLikeToggle}
+            >
+              {isLiked ? <HeartFill size={19} /> : <HeartLine size={19} />}
+            </button>
+            <button
+              type="button"
+              aria-label={isPlaying ? "Pause" : "Play"}
+              className="inline-flex h-[36px] w-[36px] items-center justify-center rounded-full bg-btn-primary-bg text-btn-primary-text active:scale-90 shadow-md"
+              onClick={() => void playerEngine.togglePlayPause()}
+            >
+              <span className="relative flex h-[16px] w-[16px] items-center justify-center">
+                <PlayerMorphIcon
+                  icon={isPlaying ? ICON_PAUSE : ICON_PLAY}
+                  size={16}
+                />
+              </span>
+            </button>
+            <button
+              type="button"
+              aria-label="Next track"
+              className={`${iconButtonClass} !h-[34px] !w-[34px] text-text-secondary`}
+              onClick={() => void playerEngine.skipNext()}
+            >
+              <SkipNext size={20} weight="Bold" />
+            </button>
+          </div>
+        </div>
+
         <div
-          className={`relative grid h-full pointer-events-none ${
+          className={`relative hidden md:grid h-full pointer-events-none ${
             embedded
               ? "grid-cols-[280px_minmax(0,1fr)_320px]"
               : "grid-cols-[286px_minmax(0,1fr)]"
@@ -891,7 +965,7 @@ function MiniPlayer({
           </div>
         </div>
 
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+        <div className="pointer-events-none absolute inset-0 hidden md:flex items-center justify-center">
           <div
             className="pointer-events-auto flex items-center gap-[10px] prevent-seek cursor-default"
             onPointerDown={(e) => e.stopPropagation()}

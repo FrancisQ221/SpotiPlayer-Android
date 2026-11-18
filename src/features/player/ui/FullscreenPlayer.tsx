@@ -413,15 +413,15 @@ export function FullscreenPlayer({
 
       <div className="absolute inset-0 z-[1] bg-black/40" />
 
-      <div className="absolute inset-0 z-10 flex">
-        <div className="flex-1 flex flex-col items-center justify-center gap-5">
+      <div className="absolute inset-0 z-10 flex flex-col md:flex-row overflow-y-auto md:overflow-hidden">
+        <div className="w-full md:flex-1 shrink-0 flex flex-col items-center justify-center gap-4 py-6 md:py-0">
           <PlayerUiElements onClose={onClose} />
         </div>
 
-        <div className="flex-1 h-full min-h-0 pl-2 pr-6 flex flex-col relative">
+        <div className="w-full md:flex-1 min-h-[360px] md:h-full min-h-0 px-4 md:pl-2 md:pr-6 flex flex-col relative pb-8 md:pb-0">
           {/* Top Bar: Lyrics Provider, Sync Adjuster, View Mode & Zen Visualizer */}
-          {/* pr-[140px] provides a generous safe margin so controls are NEVER under or obscured by the window control buttons */}
-          <div className="w-full pt-3 pb-2 pl-1 pr-[140px] flex items-center justify-between gap-3 shrink-0 z-30 pointer-events-auto">
+          {/* pr-[140px] on desktop provides margin for window buttons */}
+          <div className="w-full pt-3 pb-2 pl-1 pr-4 md:pr-[140px] flex items-center justify-between gap-3 shrink-0 z-30 pointer-events-auto">
             {/* Left: Selección de proveedor y Ajuste de desfase */}
             <div className="flex items-center gap-2 min-w-0">
               {showProviderIsland ? <LyricsProviderIsland /> : <div />}

@@ -545,3 +545,17 @@ html[data-hover-reset] [data-window-controls] button:hover {
   background-color: transparent !important;
 }
 
+/* Mobile performance optimizations */
+@media (max-width: 768px), (pointer: coarse) {
+  /* Disable expensive GPU readback backdrop filters on mobile for smooth 60fps */
+  [class*="backdrop-blur"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  /* Smooth touch scrolling */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+

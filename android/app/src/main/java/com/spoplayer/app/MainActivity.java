@@ -25,6 +25,7 @@ public class MainActivity extends BridgeActivity {
         super.onCreate(savedInstanceState);
 
         WebView webView = getBridge().getWebView();
+        webView.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
         WebSettings settings = webView.getSettings();
 
         // Allow media to autoplay without gesture (required for background audio)

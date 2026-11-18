@@ -542,9 +542,9 @@ function LibraryPlaylistContent() {
               isReady ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
           >
-            <div className="relative z-10 flex flex-row items-stretch gap-[16px] pl-[32px] pr-[16px] h-full w-full min-h-0 box-border">
+            <div className="relative z-10 flex flex-col md:flex-row items-stretch gap-[16px] px-3 md:pl-[32px] md:pr-[16px] h-full w-full min-h-0 box-border overflow-y-auto md:overflow-hidden">
               <div
-                className="shrink-0 w-[280px] self-start pt-[56px] pb-[24px]"
+                className="w-full md:w-[280px] shrink-0 self-center md:self-start pt-4 md:pt-[56px] pb-2 md:pb-[24px]"
                 data-no-window-drag
               >
                 <EntitySidebar
@@ -879,7 +879,7 @@ function LibraryPlaylistContent() {
                     targetScrollTopRef.current = null;
                   }
                 }}
-                className="min-w-0 flex-1 h-full min-h-0 overflow-y-auto overflow-x-hidden px-[8px] pt-[56px] pb-[24px] overscroll-contain"
+                className="min-w-0 flex-1 w-full md:h-full min-h-0 md:overflow-y-auto overflow-x-hidden px-1 md:px-[8px] pt-2 md:pt-[56px] pb-[96px] md:pb-[24px] overscroll-contain"
                 style={{ willChange: "scroll-position" }}
               >
               {currentTracks.length === 0 ? (

@@ -88,6 +88,9 @@ export function useWindowDrag({
   enableDoubleClickMaximize = true,
 }: WindowDragOptions = {}) {
   useEffect(() => {
+    if (typeof window !== "undefined" && !window.spoplayerElectron) {
+      return;
+    }
     // the compositor handles move and double click maximize natively
     if (usesNativeWindowDrag()) {
       return enableNativeWindowDrag(topAreaHeight);

@@ -717,28 +717,30 @@ export default function AppFrame({ children }: AppFrameProps) {
   );
 
   // Detect if running on Android (no Electron shell, Android user agent)
-  const isAndroid = useMemo(
-    () =>
-      typeof navigator !== "undefined" &&
-      /Android/i.test(navigator.userAgent) &&
-      !(window as any).spoplayerElectron,
-    [],
-  );
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === "undefined") return false;
+    if ((window as any).spoplayerElectron) return false;
+    return window.innerWidth < 768 || /Android|iPhone|iPad/i.test(navigator.userAgent);
+  });
 
-  // On Android portrait, use a bottom-nav layout instead of side-nav
-  const [isPortrait, setIsPortrait] = useState(
-    () => typeof window !== "undefined" && window.innerHeight > window.innerWidth,
-  );
+  const [isPortrait, setIsPortrait] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.innerHeight >= window.innerWidth;
+  });
+
   useEffect(() => {
-    if (!isAndroid) return;
-    const mq = window.matchMedia("(orientation: portrait)");
-    const handler = (e: MediaQueryListEvent) => setIsPortrait(e.matches);
-    mq.addEventListener("change", handler);
-    setIsPortrait(mq.matches);
-    return () => mq.removeEventListener("change", handler);
-  }, [isAndroid]);
+    if (typeof window === "undefined") return;
+    const updateSize = () => {
+      const isSmall = window.innerWidth < 768 || /Android|iPhone|iPad/i.test(navigator.userAgent);
+      const isPort = window.innerHeight >= window.innerWidth;
+      setIsMobile(isSmall && !(window as any).spoplayerElectron);
+      setIsPortrait(isPort);
+    };
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
 
-  const useMobileLayout = isAndroid && isPortrait;
+  const useMobileLayout = isMobile && isPortrait;
 
   // ─── Mobile layout (Android portrait) ────────────────────────────────────
   if (useMobileLayout) {
