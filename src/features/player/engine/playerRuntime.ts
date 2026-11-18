@@ -57,10 +57,16 @@ export class PlayerRuntime {
   constructor() {
     const win = typeof window !== "undefined" ? (window as any) : null;
     let audio = (win?.__spoplayer_audio || (typeof document !== "undefined" && document.getElementById("spoplayer-audio"))) as HTMLAudioElement | null;
+    const isMobile =
+      typeof window !== "undefined" &&
+      (!win?.spoplayerElectron || /Android|iPhone|iPad/i.test(navigator.userAgent));
+
     if (!audio) {
       audio = new Audio();
       audio.id = "spoplayer-audio";
-      audio.crossOrigin = "anonymous";
+      if (!isMobile) {
+        audio.crossOrigin = "anonymous";
+      }
       audio.preload = "auto";
       if (typeof document !== "undefined") {
         document.body.appendChild(audio);
@@ -71,7 +77,9 @@ export class PlayerRuntime {
     }
     this.audio = audio;
     this.setupAudioListeners(this.audio);
-    pitchShifter.attach(this.audio);
+    if (!isMobile) {
+      pitchShifter.attach(this.audio);
+    }
 
     const initialVolume = usePlayerStore.getState().volume;
     this.audio.volume = initialVolume;
@@ -1087,6 +1095,10 @@ export class PlayerRuntime {
   private cacheAudioInBackground(track: Track, stream: PlaybackStream, signal: AbortSignal) {
     if (track.id.startsWith("local:")) return;
     if (track.durationMs && track.durationMs > 20 * 60 * 1000) return;
+    const isMobile =
+      typeof window !== "undefined" &&
+      (!(window as any).spoplayerElectron || /Android|iPhone|iPad/i.test(navigator.userAgent));
+    if (isMobile) return;
     const generation = audioCache.currentGeneration();
     void (async () => {
       try {

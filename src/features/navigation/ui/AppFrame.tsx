@@ -18,6 +18,8 @@ import {
   User2Fill,
   AlbumFill,
   PlaylistFill,
+  BookmarksFill,
+  Settings4Fill,
 } from "@mingcute/react";
 import Sidebar from "./Sidebar";
 import WindowControls from "./WindowControls";
@@ -713,6 +715,275 @@ export default function AppFrame({ children }: AppFrameProps) {
     () => getBlockStyle(contentViewConfig, isDark, hasCustomBg),
     [contentViewConfig, isDark, hasCustomBg],
   );
+
+  // Detect if running on Android (no Electron shell, Android user agent)
+  const isAndroid = useMemo(
+    () =>
+      typeof navigator !== "undefined" &&
+      /Android/i.test(navigator.userAgent) &&
+      !(window as any).spoplayerElectron,
+    [],
+  );
+
+  // On Android portrait, use a bottom-nav layout instead of side-nav
+  const [isPortrait, setIsPortrait] = useState(
+    () => typeof window !== "undefined" && window.innerHeight > window.innerWidth,
+  );
+  useEffect(() => {
+    if (!isAndroid) return;
+    const mq = window.matchMedia("(orientation: portrait)");
+    const handler = (e: MediaQueryListEvent) => setIsPortrait(e.matches);
+    mq.addEventListener("change", handler);
+    setIsPortrait(mq.matches);
+    return () => mq.removeEventListener("change", handler);
+  }, [isAndroid]);
+
+  const useMobileLayout = isAndroid && isPortrait;
+
+  // ─── Mobile layout (Android portrait) ────────────────────────────────────
+  if (useMobileLayout) {
+
+    return (
+      <div
+        ref={appFrameRef}
+        data-custom-bg={hasCustomBg ? "true" : undefined}
+        className="relative flex flex-col h-full w-full overflow-hidden rounded-none bg-bg-canvas"
+      >
+        {/* Background wallpaper */}
+        {hasCustomBg && backgroundImage && (
+          <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden>
+            <img
+              src={backgroundImage}
+              alt=""
+              className="w-full h-full object-cover select-none"
+              style={{
+                filter: backgroundBlur > 0 ? `blur(${backgroundBlur}px)` : undefined,
+                transform: backgroundBlur > 0 ? "scale(1.05)" : undefined,
+              }}
+            />
+            {backgroundDim > 0 && (
+              <div className="absolute inset-0 bg-black" style={{ opacity: backgroundDim / 100 }} />
+            )}
+          </div>
+        )}
+
+        {/* Scrollable content area */}
+        <main
+          data-custom-bg={hasCustomBg ? "true" : undefined}
+          className={`flex-1 min-w-0 flex flex-col relative overflow-hidden ${hasCustomBg ? "" : "bg-bg-primary"}`}
+          style={mainStyle}
+        >
+          {/* Top search bubble */}
+          {!searchOpen && !isFullscreenPlayer && (
+            <div className="absolute top-3 inset-x-0 z-30 flex justify-center pointer-events-none px-4">
+              <button
+                type="button"
+                onClick={handleSearchToggle}
+                className="pointer-events-auto flex items-center gap-3 h-[44px] px-5 rounded-full bg-[#0e1612]/90 border border-[var(--accent-primary,#00f59b)]/35 backdrop-blur-2xl shadow-[0_4px_24px_rgba(0,0,0,0.5)] transition-all duration-200 cursor-pointer active:scale-[0.98]"
+              >
+                <Search3Fill className="w-[18px] h-[18px] text-[var(--accent-primary,#00f59b)] shrink-0" />
+                <span className="text-[14px] font-medium text-text-secondary select-none">Buscar canciones, artistas...</span>
+              </button>
+            </div>
+          )}
+
+          <div
+            ref={mainScrollRef}
+            className={`h-full ${searchOpen || isFullscreenPlayer ? "overflow-hidden" : "overflow-y-auto"} pt-[60px] ${shouldShowMiniPlayer ? "pb-[160px]" : "pb-[72px]"}`}
+          >
+            <PageTransition>
+              {isFullscreenRoute ? shellChildrenRef.current : children}
+            </PageTransition>
+          </div>
+
+          {/* Search overlay */}
+          <AnimatePresence>
+            {searchOpen && (
+              <motion.div
+                key="search-popup-wrapper"
+                ref={searchPopupRef}
+                initial={{ opacity: 0, y: -12, scale: 0.99 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -12, scale: 0.99 }}
+                transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute inset-x-0 z-[60] flex flex-col items-center pointer-events-none pt-[12px]"
+                style={{ top: 0, bottom: 0 }}
+              >
+                {/* Input */}
+                <div className="w-[calc(100%-32px)] h-[54px] rounded-[8px] pointer-events-auto flex items-center px-[16px] gap-[12px] bg-bg-panel/95 border border-border-primary/50 backdrop-blur-2xl">
+                  <Search3Line size={18} className="text-text-tertiary shrink-0" />
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    placeholder="Buscar..."
+                    autoFocus
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        submitSearchQuery(searchQuery);
+                        runSearchNow();
+                      }
+                    }}
+                    className="w-full flex-1 bg-transparent border-none outline-none text-text-primary text-[16px] placeholder:text-text-tertiary"
+                  />
+                  {searchQuery.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery("")}
+                      className="text-text-tertiary pointer-events-auto"
+                    >
+                      <CloseCircleFill size={18} />
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={closeSearch}
+                    className="text-[var(--accent-primary,#00f59b)] text-[14px] font-semibold pointer-events-auto ml-1 shrink-0"
+                  >
+                    Cerrar
+                  </button>
+                </div>
+                {/* Results */}
+                <AnimatePresence mode="wait">
+                  {hasSearchQuery ? (
+                    <motion.div
+                      key="results"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.12 }}
+                      className="w-full flex-1 pointer-events-auto overflow-y-auto mt-2 px-4"
+                    >
+                      <SearchResultsList
+                        items={searchResults}
+                        isArtistSearchFilter={isArtistSearchFilter}
+                        isPlaylistSearchFilter={isPlaylistSearchFilter}
+                        onPlayFromSearch={handlePlayFromSearch}
+                        onNavigateItem={handleNavigateItem}
+                        onScroll={updateSearchMask}
+                        scrollRef={searchScrollRef}
+                      />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="history"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.12 }}
+                      className="w-full flex-1 pointer-events-auto overflow-y-auto mt-2 px-4"
+                    >
+                      <SearchHistoryList
+                        onSelectQuery={handleSelectHistoryQuery}
+                        onPlayTrack={handlePlayFromSearch}
+                        onNavigateItem={handleNavigateItem}
+                        onScroll={updateSearchMask}
+                        scrollRef={searchScrollRef}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Fullscreen player */}
+          <AnimatePresence initial={false}>
+            {fullscreenPlayerOpen ? (
+              <motion.div
+                key="fullscreen-player-overlay"
+                data-theme="dark"
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                exit={{ y: "100%" }}
+                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                onAnimationComplete={() => setFullscreenEffectsReady(fullscreenPlayerOpen)}
+                className="dark absolute inset-0 z-[70] overflow-hidden bg-black will-change-transform"
+              >
+                <FullscreenPlayer
+                  onClose={closeFullscreenPlayer}
+                  effectsReady={fullscreenEffectsReady}
+                />
+              </motion.div>
+            ) : isFullscreenRoute ? (
+              <div data-theme="dark" className="dark absolute inset-0 z-[70] overflow-hidden bg-black">
+                {children}
+              </div>
+            ) : null}
+          </AnimatePresence>
+
+          {/* Mini Player floating above bottom nav */}
+          {shouldShowMiniPlayer && !isFullscreenPlayer && (
+            <div className="pointer-events-none absolute bottom-[72px] inset-x-0 z-[55] px-3">
+              <div className="pointer-events-auto w-full">
+                <MiniPlayer
+                  embedded
+                  isEdgeToEdge={true}
+                  onQueueOpenChange={handleQueuePopupToggle}
+                  onQueueToggle={handleQueuePopupToggleRequest}
+                  onFullscreenOpen={openFullscreenPlayer}
+                />
+              </div>
+            </div>
+          )}
+        </main>
+
+        {/* Bottom Navigation Bar */}
+        <nav className="relative z-[60] flex h-[72px] w-full shrink-0 items-center justify-around border-t border-border-primary/30 bg-bg-canvas/95 backdrop-blur-2xl px-2 pb-safe-or-2">
+          {[
+            { id: "home", label: "Inicio", href: "/", Icon: GridFill },
+            { id: "library", label: "Biblioteca", href: "/library", Icon: BookmarksFill },
+            { id: "search", label: "Buscar", Icon: Search3Fill, action: () => toggleSearch() },
+            { id: "settings", label: "Ajustes", Icon: Settings4Fill, action: () => openSettings() },
+          ].map((item) => {
+            const isActive =
+              item.id === "search"
+                ? searchOpen
+                : item.id === "settings"
+                  ? false
+                  : item.id === "library"
+                    ? pathname.startsWith("/library")
+                    : pathname === "/";
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => {
+                  if ("action" in item && item.action) {
+                    item.action();
+                  } else if ("href" in item && item.href) {
+                    navigate(item.href);
+                  }
+                }}
+                className={`flex flex-col items-center gap-[3px] px-4 py-2 rounded-xl transition-all duration-150 cursor-pointer border-none bg-transparent active:scale-90 ${isActive ? "text-[var(--accent-primary,#00f59b)]" : "text-text-tertiary"}`}
+              >
+                <item.Icon size={22} />
+                <span className="text-[10px] font-medium select-none">{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Modals */}
+        <AddToPlaylistModal />
+        <AddToLibraryModal />
+        <RemoveFromPlaylistModal />
+        <RemoveFromLibraryModal />
+        <ImportLikesModal />
+        <CreatePlaylistModal />
+        <ImportReviewModal />
+        <SettingsModal />
+        <StatsModal open={statsOpen} onClose={closeStats} />
+        <AudioVisualizerModal open={zenVisualizerOpen} onClose={closeZenVisualizer} />
+        <EqualizerModal open={equalizerOpen} onClose={closeEqualizer} />
+        <UpdateModal />
+        <UpdateToastBridge />
+      </div>
+    );
+  }
+  // ─── End mobile layout ────────────────────────────────────────────────────
 
   return (
     <div

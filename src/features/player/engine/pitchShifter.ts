@@ -227,6 +227,11 @@ export interface AudioEffectsParams {
   reverbLevel?: number;
 }
 
+const IS_ANDROID =
+  typeof navigator !== "undefined" &&
+  /Android/i.test(navigator.userAgent) &&
+  !(window as any).spoplayerElectron;
+
 export class PitchShifterController {
   private context: AudioContext | null = null;
   private sourceNode: MediaElementAudioSourceNode | null = null;
@@ -235,6 +240,10 @@ export class PitchShifterController {
 
   public attach(audio: HTMLAudioElement): void {
     if (typeof window === "undefined") return;
+    // On Android WebView, skip the Web Audio graph entirely.
+    // createMediaElementSource taints a cross-origin stream and causes
+    // buffer underruns / silence on most Android devices.
+    if (IS_ANDROID) return;
     const win = window as any;
 
     try {
@@ -442,6 +451,7 @@ export class PitchShifterController {
   }
 
   public resumeContext(): void {
+    if (IS_ANDROID) return;
     if (this.context && this.context.state === "suspended") {
       void this.context.resume().catch(() => {});
     }
@@ -453,6 +463,7 @@ export class PitchShifterController {
     arg3?: boolean,
     arg4?: number,
   ): void {
+    if (IS_ANDROID) return;
     if (!this.isConnected || !this.context || !this.graph) {
       if (typeof window !== "undefined") {
         const win = window as any;
